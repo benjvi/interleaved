@@ -2,7 +2,7 @@
 from pydub import AudioSegment
 from datetime import timedelta
 
-audiobook_filename = "y2mate.com - audiobooks_the_little_prince_antoine_de_saint_exupery_yWQo_AAHDUA.mp3"
+audiobook_filename = "the-little-prince-en"§
 chapter_segments = [
   (timedelta(seconds=0), timedelta(minutes=3, seconds=8)),
   (timedelta(minutes=3, seconds=8), timedelta(minutes=8, seconds=13)),
