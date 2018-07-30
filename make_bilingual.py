@@ -2,7 +2,7 @@
 from pydub import AudioSegment
 from pprint import pprint
 from pydub.silence import split_on_silence
-from os import mkdir
+from os import makedirs
 from os.path import exists
 import sys
 
@@ -21,7 +21,7 @@ outdir = sys.argv[2]
 # outdir = "output/{}-{}-{}-test".format(fluent_lang_title, fluent_lang_code, learning_lang_code)
 
 if not exists(outdir):
-    mkdir(outdir)
+    makedirs(outdir, exist_ok=True)
 
 # because transaltions and emphasis is different between readings and languages, two audio tracks won't make uniform progress through the track
 # we add a fudge factor - a constant percentage by which the foreign language progress should remain ahead of the home language progress
