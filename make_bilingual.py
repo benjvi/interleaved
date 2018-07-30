@@ -30,7 +30,6 @@ PROGRESS_FUDGE_FACTOR=0.10
 # TODO: can parallelise both by chapter and chunk generation in FR/ES
 # TODO: removed for loop, readd it in a way that makes sense on server
 # for chapter_num in range(1, 2): #28
-print("Processing chapter {}".format(chapter_num))
 # SPANISH
 chapter = AudioSegment.from_mp3(in_audio_base_path)
 es_chunks = split_on_silence(chapter, silence_thresh=-46, keep_silence=100)
