@@ -39,7 +39,7 @@ es_duration = sum(chunk.duration_seconds for chunk in es_chunks)
 print("{} audio length in seconds: {}".format(learning_lang, es_duration))
 
 # FRENCH
-chapter = AudioSegment.from_mp3(in_audio_tgt_path))
+chapter = AudioSegment.from_mp3(in_audio_tgt_path)
 fr_chunks = split_on_silence(chapter, min_silence_len=900, silence_thresh=-46, keep_silence=100)
 print("{} chunks: {}".format(fluent_lang, len(fr_chunks)))
 fr_duration = sum(chunk.duration_seconds for chunk in fr_chunks)
