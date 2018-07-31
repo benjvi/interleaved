@@ -15,9 +15,9 @@ learning_lang_title = "el-principito"
 fluent_lang_chapter = "chapter"
 learning_lang_chapter = "capitulo"
 
-in_audio_base_path = sys.argv[0]
-in_audio_tgt_path = sys.argv[1]
-outdir = sys.argv[2]
+in_audio_base_path = sys.argv[1]
+in_audio_tgt_path = sys.argv[2]
+outdir = sys.argv[3]
 # outdir = "output/{}-{}-{}-test".format(fluent_lang_title, fluent_lang_code, learning_lang_code)
 
 if not exists(outdir):
