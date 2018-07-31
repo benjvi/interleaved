@@ -63,7 +63,8 @@ while (fr_idx < len(fr_chunks)-1 or es_idx < len(es_chunks)-1):
         print("Appending {} chunk number {}, of length {}".format(learning_lang_code, es_idx, es_chunks[es_idx].duration_seconds))
         print("{} play time is now: {}, progress: {}".format(learning_lang_code, es_play_time, es_progress))
         bilingual_audio += es_chunks[0]
-        es_play_time += es_chunks[es_idx+1].duration_seconds
+        if (es_idx+1 < len(es_chunks)):
+            es_play_time += es_chunks[es_idx+1].duration_seconds
     elif (es_progress-PROGRESS_FUDGE_FACTOR > fr_progress or es_idx >= len(es_chunks)-1):
         fr_idx += 1
         if fr_idx < len(fr_chunks):
