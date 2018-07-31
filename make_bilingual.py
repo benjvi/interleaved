@@ -88,4 +88,4 @@ while (fr_idx < len(fr_chunks)-1 or es_idx < len(es_chunks)-1):
         else:
             print("Reached last {} chunk in chapter".format(learning_lang_code))
 bilingual_audio += AudioSegment.silent(duration=3000)
-bilingual_audio.export("{}/audio-out.mp3", format="mp3", tags={"album": "output-audio-{}-{}".format(fluent_lang_code, learning_lang_code), "artist": "bv", "title": "audio-out"})
+bilingual_audio.export("{}/audio-out.mp3".format(outdir), format="mp3", tags={"album": "output-audio-{}-{}".format(fluent_lang_code, learning_lang_code), "artist": "bv", "title": "audio-out"})
