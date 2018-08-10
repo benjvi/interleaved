@@ -6,6 +6,7 @@ from os import makedirs
 from os.path import exists
 import sys
 
+# TODO: standardise names on base/tgt language
 fluent_lang = "English"
 learning_lang = "Spanish"
 fluent_lang_code = "EN"
@@ -25,21 +26,25 @@ if not exists(outdir):
 
 # because transaltions and emphasis is different between readings and languages, two audio tracks won't make uniform progress through the track
 # we add a fudge factor - a constant percentage by which the foreign language progress should remain ahead of the home language progress
-PROGRESS_FUDGE_FACTOR=0.10
+# TODO: this should be an absolute offset not a percentage
+# atm this needs to be adjusted with the length of the audio
+# it might make sense to have this about the same size as average chunk length
+# this should have the effect of consolidating chunks that are too short
+PROGRESS_FUDGE_FACTOR=0.02
 
 # TODO: can parallelise both by chapter and chunk generation in FR/ES
 # TODO: removed for loop, readd it in a way that makes sense on server
 # for chapter_num in range(1, 2): #28
 # SPANISH
 chapter = AudioSegment.from_mp3(in_audio_base_path)
-es_chunks = split_on_silence(chapter, silence_thresh=-46, keep_silence=100)
+es_chunks = split_on_silence(chapter, min_silence_len=900, silence_thresh=-46, keep_silence=900)
 print("{} chunks: {}".format(learning_lang, len(es_chunks)))
 es_duration = sum(chunk.duration_seconds for chunk in es_chunks)
 print("{} audio length in seconds: {}".format(learning_lang, es_duration))
 
 # FRENCH
 chapter = AudioSegment.from_mp3(in_audio_tgt_path)
-fr_chunks = split_on_silence(chapter, min_silence_len=900, silence_thresh=-46, keep_silence=100)
+fr_chunks = split_on_silence(chapter, min_silence_len=900, silence_thresh=-46, keep_silence=900)
 print("{} chunks: {}".format(fluent_lang, len(fr_chunks)))
 fr_duration = sum(chunk.duration_seconds for chunk in fr_chunks)
 print("{} audio length in seconds: {}".format(fluent_lang, fr_duration))
@@ -87,5 +92,7 @@ while (fr_idx < len(fr_chunks)-1 or es_idx < len(es_chunks)-1):
                 es_play_time += es_chunks[es_idx+1].duration_seconds
         else:
             print("Reached last {} chunk in chapter".format(learning_lang_code))
+print("Exporting interleaved audio")
 bilingual_audio += AudioSegment.silent(duration=3000)
 bilingual_audio.export("{}/audio-out.mp3".format(outdir), format="mp3", tags={"album": "output-audio-{}-{}".format(fluent_lang_code, learning_lang_code), "artist": "bv", "title": "audio-out"})
+print("Exported interleaved audio")
