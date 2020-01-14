@@ -2,7 +2,7 @@
 from pydub import AudioSegment
 from datetime import timedelta
 
-audiobook_filename = "the-little-prince-en"§
+audiobook_filename = "the-little-prince-en.mp3"
 chapter_segments = [
   (timedelta(seconds=0), timedelta(minutes=3, seconds=8)),
   (timedelta(minutes=3, seconds=8), timedelta(minutes=8, seconds=13)),
@@ -33,8 +33,8 @@ chapter_segments = [
   (timedelta(hours=1, minutes=50, seconds=13), timedelta(hours=1, minutes=57, seconds=37)) 
 ]
 
-audiobook = AudioSegment.from_mp3("data/unsanitised/{}".format(audiobook_filename))
+audiobook = AudioSegment.from_mp3("{}".format(audiobook_filename))
 
 for idx, segment in enumerate(chapter_segments, start=1):
   chapter = audiobook[segment[0].total_seconds()*1000:segment[1].total_seconds()*1000]
-  chapter.export("data/the-little-prince/chapter-{}.mp3".format(idx), format="mp3", tags={"album": "The Little Prince", "artist": "bv", "title": "the-little-prince-ch-{}".format(idx)}) 
+  chapter.export("the-little-prince/chapter-{}.mp3".format(idx), format="mp3", tags={"album": "The Little Prince", "artist": "bv", "title": "the-little-prince-ch-{}".format(idx)}) 

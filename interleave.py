@@ -4,6 +4,7 @@ from pydub.silence import split_on_silence
 from os import makedirs
 from os.path import exists
 import sys
+import argparse
 
 # TODO: proper arg parsing or a config file
 base_lang = "English"
@@ -11,13 +12,6 @@ base_lang_code = "EN"
 
 target_lang = "Spanish"
 target_lang_code = "ES"
-
-base_lang_title = "100-years-of-solitude-ch-1"
-# target_lang_title = "el-principito"
-
-discard_initial_chunks_base = 6
-discard_initial_chunks_target = 5
-
 
 class LangChunk:
 
@@ -85,7 +79,7 @@ def interleave_matching_audio_segments(base_lang_chunks, tgt_lang_chunks):
     # this should have the effect of consolidating chunks that are too short
     # N.B. float division here
     tgt_lang_avg_chunk_duration = tgt_lang_duration / len(tgt_lang_chunks)
-    progress_fudge_factor = tgt_lang_avg_chunk_duration / (tgt_lang_audio_segment.duration_seconds * 2.0)
+    progress_fudge_factor = tgt_lang_avg_chunk_duration / ( tgt_lang_audio_segment.duration_seconds * 2 )
 
     tgt_lang_play_time = tgt_lang_chunks[0].duration_seconds
     base_lang_play_time = base_lang_chunks[0].duration_seconds
@@ -177,15 +171,32 @@ def export_each_audio_chunk(lang_chunks, outdir, base_lang_title, base_lang_code
     print("Exported interleaved audio")
 
 
-base_audio_path = sys.argv[1]
-tgt_audio_path = sys.argv[2]
-outdir = sys.argv[3]
-# outdir = "output/{}-{}-{}-test".format(fluent_lang_title, fluent_lang_code, learning_lang_code)
+parser = argparse.ArgumentParser(description='Split two audio files into chunks by utterances and interleave corresponding chunks')
+parser.add_argument('--base-audio',  type=str,
+                    help='Audio file whose chunks will be chosen first')
+parser.add_argument('--base-offset', type=int, default=0,
+                    help='Discard this number of chunks on the base audio file')
+parser.add_argument('--target-audio', type=str,
+                    help='Audio file whose chunks will be interleaved second')
+parser.add_argument('--target-offset', type=int, default=0,
+                    help='Discard this number of chunks on the target audio file')
+parser.add_argument('--outdir', type=str,
+                    help='Directory to output created files to')
+parser.add_argument('--title', type=str,
+                    help='Title with which to label output files')
+args = parser.parse_args()
+
+tgt_audio_path = args.target_audio
+base_audio_path = args.base_audio
+outdir = args.outdir
+title = args.title
+discard_initial_chunks_base = args.base_offset
+discard_initial_chunks_target = args.target_offset
 
 if not exists(outdir):
     makedirs(outdir, exist_ok=True)
 
-# TODO: can parallelise both by chapter and chunk generation in FR/ES
+# TODO: can parallelise both by chapter and chunk generation in base/tgy
 base_lang_audio_segment = AudioSegment.from_mp3(base_audio_path)
 print("Creating chunks for base language")
 base_lang_chunks = create_audio_chunks(base_lang_audio_segment, 5, 15, initial_silence_thresh=-37,
@@ -200,5 +211,5 @@ tgt_lang_chunks = create_audio_chunks(tgt_lang_audio_segment, 5, 15, initial_sil
 # for chapter_num in range(1, 2): #28
 all_lang_chunks = interleave_matching_audio_segments(base_lang_chunks, tgt_lang_chunks)
 
-export_each_audio_chunk(all_lang_chunks, outdir, base_lang_title, base_lang_code, target_lang_code)
+export_each_audio_chunk(all_lang_chunks, outdir, title, base_lang_code, target_lang_code)
 
